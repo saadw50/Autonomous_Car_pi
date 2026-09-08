@@ -1,0 +1,19 @@
+# Python dependencies for the autonomous car (install on the Raspberry Pi).
+#
+# NOTE: On Raspberry Pi OS, install picamera2 and OpenCV from APT, not pip,
+# because they are tied to system libraries:
+#     sudo apt install -y python3-picamera2 python3-opencv python3-numpy
+#
+# These pip packages are the rest. Your Pi already has most of them
+# (ultralytics 8.3.223, torch 2.9.0, numpy 2.4.2, opencv 4.12, pyserial 3.5).
+#
+# Versions are floors, not pins - match what the Pi already has where possible.
+
+pyserial>=3.5
+ultralytics>=8.3.0
+numpy>=1.24
+# torch is pulled in by ultralytics; on a Pi use the CPU wheel it selects.
+
+# For the Phase-4 speed-up (export YOLO to NCNN and run it fast on the Pi):
+ncnn>=1.0.20240102
+# ultralytics exports with:  yolo export model=yolov8n.pt format=ncnn imgsz=320
