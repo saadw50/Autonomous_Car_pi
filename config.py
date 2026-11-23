@@ -1,15 +1,3 @@
-"""
-Central configuration for the autonomous car.
-
-Everything tunable lives here so the rest of the code stays clean. Values are
-grouped by subsystem. Units are noted on every line that has one.
-
-Nothing in this file talks to hardware; importing it is always safe.
-"""
-
-# ----------------------------------------------------------------------------
-# Serial link to the Arduino motor controller
-# ----------------------------------------------------------------------------
 SERIAL_PORT = "/dev/ttyACM0"   # Arduino Uno usually enumerates here on the Pi.
 SERIAL_BAUD = 115200           # MUST match hardware_config.h SERIAL_BAUD.
 
@@ -22,35 +10,17 @@ MAX_CMD = 180                  # 0..255. Output ceiling for each motor channel.
 # within the firmware's [MIN_WATCHDOG_MS, MAX_WATCHDOG_MS] = [100, 1000].
 DRIVE_TTL_MS = 250
 HEARTBEAT_HZ = 20              # DRIVE frames per second (period = 50 ms).
-
-# ----------------------------------------------------------------------------
-# Camera
-# ----------------------------------------------------------------------------
 CAM_WIDTH = 640
 CAM_HEIGHT = 480
 CAM_FPS = 30
-
-# ----------------------------------------------------------------------------
-# Lane detection
-# ----------------------------------------------------------------------------
-# ROI is a trapezoid expressed as fractions of the frame (0..1).
-# (top_y is where the road starts; narrower at top like a real road ahead.)
 ROI_TOP_Y = 0.55               # ignore everything above this fraction of height
 ROI_TOP_LEFT = 0.30
 ROI_TOP_RIGHT = 0.70
 ROI_BOTTOM_LEFT = 0.00
 ROI_BOTTOM_RIGHT = 1.00
-
-# White-tape extraction.
-# The track is a dark glossy mat with thin white tape, on a wood floor, under
-# uneven light with glare. The robust trick is WHITE TOP-HAT morphology: it
-# keeps bright structures THINNER than the kernel (the tape) and removes large
-# bright areas (wood floor, big glare, windows) and gradual lighting. CLAHE
-# normalizes contrast first so it works in both dim and bright frames.
 USE_TOPHAT = True
 CLAHE_CLIP = 2.5               # contrast-limited equalization strength
 TOPHAT_KERNEL = 31             # px; must be LARGER than the tape width so tape
-                               #   survives the top-hat. Tape ~15-25px at 640w.
 TOPHAT_MIN = 28                # min top-hat intensity to count as tape; guards
                                #   against low-contrast wood grain (raise to
                                #   reject more, lower to catch dimmer tape).
@@ -110,24 +80,15 @@ STOP_SIGN_MIN_AREA = 0.010     # ~10% of frame width square
 OBSTACLE_MIN_AREA = 0.045
 # Obstacles only stop us if they sit roughly ahead, not off to the far edge.
 OBSTACLE_CENTER_BAND = 0.60    # central fraction of frame width to watch
-
-# ----------------------------------------------------------------------------
-# Control (steering + speed)
-# ----------------------------------------------------------------------------
 BASE_THROTTLE = 0.45           # cruise throttle, normalized 0..1
 MIN_THROTTLE = 0.25            # floor when steering hard
 KP = 0.9                       # proportional gain on normalized cross-track error
 KD = 0.35                      # derivative gain
 STEER_SLEW = 0.15              # max change in steer command per control tick
 THROTTLE_SLEW = 0.08
-
-# ----------------------------------------------------------------------------
-# Behaviours / manoeuvres
-# ----------------------------------------------------------------------------
 STOP_SIGN_HOLD_S = 3.0         # seconds to sit still at a stop sign
 STOP_SIGN_COOLDOWN_S = 8.0     # ignore the same sign for this long after resuming
 OBSTACLE_CLEAR_S = 0.5         # obstacle must be gone this long before resuming
-
 # U-turn is an open-loop timed manoeuvre (no encoders yet). Tune on the bench.
 UTURN_THROTTLE = 0.40
 UTURN_STEER = 1.0              # full lock
